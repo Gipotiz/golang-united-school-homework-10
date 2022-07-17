@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"homework/handler"
 	"log"
 	"net/http"
 	"os"
@@ -20,6 +21,12 @@ main function reads host/port from env just for an example, flavor it following 
 // Start /** Starts the web server listener on given host and port.
 func Start(host string, port int) {
 	router := mux.NewRouter()
+
+	router.HandleFunc("/name/{PARAM}", handler.GetParamHandler).Methods(http.MethodGet)
+	router.HandleFunc("/bad", handler.GetStatusBadHandler).Methods(http.MethodGet)
+	router.HandleFunc("/data", handler.PostMessageHandler).Methods(http.MethodPost)
+	router.HandleFunc("/headers", handler.SumHandler).Methods(http.MethodPost)
+	http.Handle("/", router)
 
 	log.Println(fmt.Printf("Starting API server on %s:%d\n", host, port))
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", host, port), router); err != nil {
